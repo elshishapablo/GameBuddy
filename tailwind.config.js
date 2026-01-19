@@ -7,10 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        'bone-white': '#F9F9FB',
-        'dark-gray': '#1F2937',
-        'medium-gray': '#6B7280',
-        'light-gray': '#E5E7EB',
+        'dark-bg': '#0A0A0A',
+        'dark-surface': '#121212',
+        'dark-card': '#1A1A1A',
+        'dark-border': '#2A2A2A',
+        'light-text': '#F5F5F5',
+        'medium-text': '#B0B0B0',
+        'accent': '#FFFFFF',
+        'accent-hover': '#E0E0E0',
       },
       fontFamily: {
         sans: ['Inter', 'Geist', 'system-ui', 'sans-serif'],

@@ -101,27 +101,27 @@ const Chat = ({ match, onClose }) => {
         initial={{ opacity: 0, x: 300 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 300 }}
-        className="fixed right-0 top-0 h-full w-full md:w-96 bg-bone-white z-50 
+        className="fixed right-0 top-0 h-full w-full md:w-96 bg-dark-bg z-50 
                    shadow-2xl flex flex-col"
       >
         {/* Header */}
-        <div className="glass border-b border-light-gray p-4 flex items-center justify-between">
+        <div className="glass border-b border-dark-border p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src={match.avatar}
               alt={match.name}
-              className="w-10 h-10 rounded-full border border-light-gray"
+              className="w-10 h-10 rounded-full border border-dark-border"
             />
             <div>
-              <h3 className="font-semibold text-dark-gray">{match.name}</h3>
-              <p className="text-xs text-medium-gray">En línea</p>
+              <h3 className="font-semibold text-light-text">{match.name}</h3>
+              <p className="text-xs text-medium-text">En línea</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/60 rounded-lg transition-colors"
+            className="p-2 hover:bg-dark-card/60 rounded-lg transition-colors"
           >
-            <X size={20} className="text-dark-gray" />
+            <X size={20} className="text-light-text" />
           </button>
         </div>
 
@@ -139,8 +139,8 @@ const Chat = ({ match, onClose }) => {
                 <div
                   className={`max-w-[75%] rounded-2xl px-4 py-2 ${
                     message.sender === 'me'
-                      ? 'bg-dark-gray text-white'
-                      : 'glass text-dark-gray'
+                      ? 'bg-accent text-dark-bg'
+                      : 'glass text-light-text'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
@@ -158,7 +158,7 @@ const Chat = ({ match, onClose }) => {
         </div>
 
         {/* Input */}
-        <div className="glass border-t border-light-gray p-4">
+        <div className="glass border-t border-dark-border p-4">
           <div className="flex items-center gap-2">
             <div className="flex-1 relative">
               <input
@@ -167,22 +167,22 @@ const Chat = ({ match, onClose }) => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Escribe un mensaje..."
-                className="w-full px-4 py-2 rounded-xl border border-light-gray 
-                         bg-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 
-                         focus:ring-dark-gray/20 text-dark-gray"
+                className="w-full px-4 py-2 rounded-xl border border-dark-border 
+                         bg-dark-card/60 backdrop-blur-sm focus:outline-none focus:ring-2 
+                         focus:ring-accent/20 text-light-text"
               />
             </div>
             <button
               onClick={handleSend}
               disabled={!inputMessage.trim()}
-              className="p-2 bg-dark-gray text-white rounded-xl hover:bg-medium-gray 
+              className="p-2 bg-accent text-dark-bg rounded-xl hover:bg-accent-hover 
                        transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send size={20} />
             </button>
           </div>
           {match.hasMicrophone && (
-            <div className="mt-2 flex items-center gap-2 text-xs text-medium-gray">
+            <div className="mt-2 flex items-center gap-2 text-xs text-medium-text">
               <Mic size={14} className="text-green-600" />
               <span>Micrófono disponible</span>
             </div>

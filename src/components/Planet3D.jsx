@@ -418,8 +418,8 @@ const Planet3D = memo(({ onMatchClick, showMatches = true, filteredMatches = [] 
   }, [showMatches, filteredMatches]);
 
   return (
-    <div className="relative w-full h-full min-h-[500px] bg-white">
-      <div ref={mountRef} className="w-full h-full min-h-[500px] bg-white">
+    <div className="relative w-full h-full min-h-[500px] bg-dark-bg">
+      <div ref={mountRef} className="w-full h-full min-h-[500px] bg-dark-bg">
         <canvas
           ref={canvasRef}
           width="700"
@@ -440,13 +440,13 @@ const Planet3D = memo(({ onMatchClick, showMatches = true, filteredMatches = [] 
           }}
         >
           <div className="glass rounded-2xl p-4 min-w-[200px] glow-gray">
-            <div className="font-semibold text-lg mb-1 text-dark-gray">{hoveredMatch.name}</div>
-            <div className="text-medium-gray text-sm mb-2">
+            <div className="font-semibold text-lg mb-1 text-light-text">{hoveredMatch.name}</div>
+            <div className="text-medium-text text-sm mb-2">
               {hoveredMatch.games.slice(0, 2).join(', ')}
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-dark-gray text-sm">{hoveredMatch.platform}</span>
-              <span className="text-sm text-medium-gray">⭐ {hoveredMatch.rating}</span>
+              <span className="text-light-text text-sm">{hoveredMatch.platform}</span>
+              <span className="text-sm text-medium-text">⭐ {hoveredMatch.rating}</span>
             </div>
           </div>
         </motion.div>

@@ -3,38 +3,42 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-light-gray;
-  }
-  
   body {
-    @apply bg-bone-white text-dark-gray font-sans antialiased;
+    background-color: #0A0A0A;
+    color: #F5F5F5;
+    font-family: 'Inter', 'Geist', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-white/80 backdrop-blur-xl border border-light-gray/50;
+    @apply bg-dark-card/80 backdrop-blur-xl border border-dark-border/50;
   }
   
   .glass-card {
     @apply glass rounded-2xl p-6 shadow-lg;
   }
   
+  .glass-light {
+    @apply bg-dark-surface/60 backdrop-blur-xl border border-dark-border/30;
+  }
+  
   .glow-gray {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   
   .btn-primary {
-    @apply bg-dark-gray text-white px-6 py-3 rounded-xl font-medium 
-           transition-all duration-300 hover:bg-medium-gray hover:scale-105 
-           active:scale-95;
+    @apply bg-accent text-dark-bg px-6 py-3 rounded-xl font-medium 
+           transition-all duration-300 hover:bg-accent-hover hover:scale-105 
+           active:scale-95 shadow-lg;
   }
   
   .btn-secondary {
-    @apply bg-white/60 backdrop-blur-sm border border-light-gray text-dark-gray 
+    @apply bg-dark-card/60 backdrop-blur-sm border border-dark-border text-light-text 
            px-6 py-3 rounded-xl font-medium transition-all duration-300 
-           hover:bg-white/80 hover:scale-105 active:scale-95;
+           hover:bg-dark-card/80 hover:scale-105 active:scale-95;
   }
 }
 

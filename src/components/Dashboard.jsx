@@ -46,22 +46,22 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bone-white">
+    <div className="min-h-screen bg-dark-bg">
       {/* Header */}
-      <header className="glass border-b border-light-gray p-4">
+      <header className="glass border-b border-dark-border p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-dark-gray">GameBuddy</h1>
+          <h1 className="text-2xl font-bold text-light-text">GameBuddy</h1>
           
           {/* Filtro de Micrófono - PRINCIPAL */}
           <div className="flex items-center gap-2">
-            <Filter size={18} className="text-medium-gray" />
+            <Filter size={18} className="text-medium-text" />
             <div className="flex items-center gap-1 glass rounded-xl p-1">
               <button
                 onClick={() => setMicrophoneFilter(null)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   microphoneFilter === null
-                    ? 'bg-dark-gray text-white'
-                    : 'text-medium-gray hover:bg-white/60'
+                    ? 'bg-accent text-dark-bg'
+                    : 'text-medium-text hover:bg-dark-card/60'
                 }`}
               >
                 Todos
@@ -70,8 +70,8 @@ const Dashboard = () => {
                 onClick={() => setMicrophoneFilter(true)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                   microphoneFilter === true
-                    ? 'bg-dark-gray text-white'
-                    : 'text-medium-gray hover:bg-white/60'
+                    ? 'bg-accent text-dark-bg'
+                    : 'text-medium-text hover:bg-dark-card/60'
                 }`}
               >
                 <Mic size={16} />
@@ -81,8 +81,8 @@ const Dashboard = () => {
                 onClick={() => setMicrophoneFilter(false)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                   microphoneFilter === false
-                    ? 'bg-dark-gray text-white'
-                    : 'text-medium-gray hover:bg-white/60'
+                    ? 'bg-accent text-dark-bg'
+                    : 'text-medium-text hover:bg-dark-card/60'
                 }`}
               >
                 <MicOff size={16} />
@@ -98,10 +98,10 @@ const Dashboard = () => {
           {/* Columna izquierda: Lista de Matches */}
           <div className="lg:col-span-1 space-y-4">
             <div className="glass-card">
-              <h2 className="text-xl font-semibold mb-4 text-dark-gray">
+              <h2 className="text-xl font-semibold mb-4 text-light-text">
                 Compañeros Disponibles
               </h2>
-              <p className="text-sm text-medium-gray mb-4">
+              <p className="text-sm text-medium-text mb-4">
                 {filteredMatches.length} {filteredMatches.length === 1 ? 'match encontrado' : 'matches encontrados'}
               </p>
             </div>
@@ -117,8 +117,8 @@ const Dashboard = () => {
                 ))
               ) : (
                 <div className="glass-card text-center py-8">
-                  <p className="text-medium-gray">No se encontraron matches</p>
-                  <p className="text-sm text-medium-gray mt-2">
+                  <p className="text-medium-text">No se encontraron matches</p>
+                  <p className="text-sm text-medium-text mt-2">
                     Intenta ajustar los filtros
                   </p>
                 </div>
@@ -129,7 +129,7 @@ const Dashboard = () => {
           {/* Columna central: Planeta 3D */}
           <div className="lg:col-span-2">
             <div className="glass-card h-full min-h-[600px]">
-              <h2 className="text-xl font-semibold mb-4 text-dark-gray">
+              <h2 className="text-xl font-semibold mb-4 text-light-text">
                 Partidas Activas en el Mundo
               </h2>
               <div className="h-[500px] rounded-xl overflow-hidden">
@@ -139,7 +139,7 @@ const Dashboard = () => {
                   filteredMatches={filteredMatches}
                 />
               </div>
-              <p className="text-sm text-medium-gray mt-4 text-center">
+              <p className="text-sm text-medium-text mt-4 text-center">
                 Haz clic en los puntos del planeta para ver partidas activas por región
               </p>
             </div>
