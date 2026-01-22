@@ -7,6 +7,7 @@ const Features = lazy(() => import('../components/Landing/Features'));
 const QueHacemos = lazy(() => import('../components/Landing/QueHacemos'));
 const HowItWorks = lazy(() => import('../components/Landing/HowItWorks'));
 const Stats = lazy(() => import('../components/Landing/Stats'));
+const ContactForm = lazy(() => import('../components/Landing/ContactForm'));
 const Footer = lazy(() => import('../components/Landing/Footer'));
 
 // Componente de placeholder para lazy loading
@@ -30,6 +31,13 @@ const Landing = ({ onGetStarted }) => {
       <LazySection><Features /></LazySection>
       <LazySection><HowItWorks /></LazySection>
       <LazySection><Stats /></LazySection>
+      <section id="contacto" className="py-8 sm:py-12 lg:py-16 bg-dark-bg">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+          <LazySection>
+            <ContactForm />
+          </LazySection>
+        </div>
+      </section>
       <LazySection><Footer /></LazySection>
     </div>
   );

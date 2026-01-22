@@ -140,41 +140,62 @@ const Planet3D = memo(({ onMatchClick, showMatches = true, filteredMatches = [] 
         return points;
       };
 
-      // Cargar puntos geográficos
+      // Cargar puntos geográficos - Optimizado: usar fallback inmediatamente, fetch en paralelo
       const loadGlobePoints = () => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        // Usar puntos locales inmediatamente para render rápido
+        const fallbackPoints = generateContinentPoints();
+        makeGlobeWithPoints(fallbackPoints);
 
-        fetch(
-          'https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-dashboard-pro/assets/js/points.json',
-          {
-            signal: controller.signal,
-            cache: 'force-cache',
-          }
-        )
-          .then((response) => {
-            clearTimeout(timeoutId);
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-          })
-          .then((data) => {
-            makeGlobeWithPoints(data.points || []);
-          })
-          .catch((error) => {
-            clearTimeout(timeoutId);
-            if (error.name !== 'AbortError') {
-              console.warn('No se pudieron cargar los puntos desde la URL:', error);
+        // Intentar cargar puntos mejorados en segundo plano (sin bloquear)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // Reducido a 3s
+
+        // Usar requestIdleCallback si está disponible para no bloquear el hilo principal
+        const loadInBackground = () => {
+          fetch(
+            'https://raw.githubusercontent.com/creativetimofficial/public-assets/master/soft-ui-dashboard-pro/assets/js/points.json',
+            {
+              signal: controller.signal,
+              cache: 'force-cache',
             }
-            const fallbackPoints = generateContinentPoints();
-            makeGlobeWithPoints(fallbackPoints);
-          });
+          )
+            .then((response) => {
+              clearTimeout(timeoutId);
+              if (!response.ok) throw new Error('Network response was not ok');
+              return response.json();
+            })
+            .then((data) => {
+              // Solo actualizar si tenemos puntos mejores
+              if (data.points && data.points.length > fallbackPoints.length) {
+                makeGlobeWithPoints(data.points);
+              }
+            })
+            .catch((error) => {
+              clearTimeout(timeoutId);
+              // Silenciar errores, ya tenemos fallback renderizado
+            });
+        };
+
+        // Cargar en segundo plano sin bloquear
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadInBackground, { timeout: 2000 });
+        } else {
+          setTimeout(loadInBackground, 100);
+        }
       };
 
-      // Función para crear el globo con los puntos
+      // Función para crear el globo con los puntos - Optimizado
       const makeGlobeWithPoints = (points) => {
         if (!points || points.length === 0) {
           console.warn('No hay puntos para renderizar');
           return;
+        }
+
+        // Limpiar globo anterior si existe
+        if (globeShape) {
+          scene.remove(globeShape);
+          if (globeShape.geometry) globeShape.geometry.dispose();
+          if (globeShape.material) globeShape.material.dispose();
         }
 
         // Crear geometría merged para los puntos del globo
@@ -188,6 +209,7 @@ const Planet3D = memo(({ onMatchClick, showMatches = true, filteredMatches = [] 
         const indices = [];
         let vertexOffset = 0;
 
+        // Procesar puntos de forma eficiente
         for (const point of points) {
           const { x, y, z } = convertFlatCoordsToSphereCoords(
             point.x,
@@ -198,8 +220,7 @@ const Planet3D = memo(({ onMatchClick, showMatches = true, filteredMatches = [] 
           );
 
           if (x && y && z) {
-            const geometry = pointGeometry.clone();
-            const positionAttribute = geometry.attributes.position;
+            const positionAttribute = pointGeometry.attributes.position;
 
             for (let i = 0; i < positionAttribute.count; i++) {
               positions.push(
@@ -209,7 +230,7 @@ const Planet3D = memo(({ onMatchClick, showMatches = true, filteredMatches = [] 
               );
             }
 
-            const indexAttribute = geometry.index;
+            const indexAttribute = pointGeometry.index;
             if (indexAttribute) {
               for (let i = 0; i < indexAttribute.count; i++) {
                 indices.push(indexAttribute.getX(i) + vertexOffset);

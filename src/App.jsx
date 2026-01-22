@@ -18,6 +18,11 @@ function App() {
     setOnboardingComplete(true);
   };
 
+  const handleBackToLanding = () => {
+    setShowLanding(true);
+    setOnboardingComplete(false);
+  };
+
   return (
     <UserProvider>
       {showLanding ? (
@@ -34,9 +39,9 @@ function App() {
           <Landing onGetStarted={handleGetStarted} />
         </Suspense>
       ) : !onboardingComplete ? (
-        <Onboarding onComplete={handleOnboardingComplete} />
+        <Onboarding onComplete={handleOnboardingComplete} onBack={handleBackToLanding} />
       ) : (
-        <Dashboard />
+        <Dashboard onBack={handleBackToLanding} />
       )}
     </UserProvider>
   );

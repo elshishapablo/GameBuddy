@@ -67,23 +67,23 @@ const Features = () => {
   ];
 
   return (
-    <section id="caracteristicas" className="py-20 bg-dark-bg">
-      <div className="container mx-auto px-4">
+    <section id="caracteristicas" className="py-10 sm:py-12 md:py-16 lg:py-20 xl:py-24 bg-dark-bg">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12 lg:mb-16"
         >
-          <h2 className="text-4xl font-bold text-light-text mb-4">Características Premium</h2>
-          <p className="text-xl text-medium-text max-w-3xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-light-text mb-3 sm:mb-4">Características Premium</h2>
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-medium-text max-w-3xl mx-auto">
             Todo lo que necesitas para encontrar compañeros de juego perfectos y disfrutar 
             de una experiencia gaming sin toxicidad
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -93,14 +93,14 @@ const Features = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="glass-card hover:shadow-xl transition-all"
+                className="glass-card hover:shadow-xl transition-all p-3 sm:p-4 lg:p-6"
               >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full 
-                              bg-dark-surface/60 backdrop-blur-sm border border-dark-border mb-4">
-                  <Icon className="w-6 h-6 text-light-text" />
+                <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full 
+                              bg-dark-surface/60 backdrop-blur-sm border border-dark-border mb-3 sm:mb-4">
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-light-text" />
                 </div>
-                <h3 className="text-lg font-semibold text-light-text mb-2">{feature.title}</h3>
-                <p className="text-sm text-medium-text">{feature.description}</p>
+                <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-light-text mb-2">{feature.title}</h3>
+                <p className="text-xs sm:text-sm md:text-base text-medium-text">{feature.description}</p>
               </motion.div>
             );
           })}
