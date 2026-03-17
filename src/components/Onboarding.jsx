@@ -11,7 +11,7 @@ const Onboarding = ({ onComplete, onBack }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const { updateUserProfile, setMatches } = useUser();
+  const { updateUserProfile, saveMatches } = useUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     nickname: '',
@@ -20,14 +20,14 @@ const Onboarding = ({ onComplete, onBack }) => {
     schedule: '',
   });
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Completar onboarding
-      updateUserProfile(formData);
+      // Guardar perfil (en BD si está disponible, siempre en localStorage)
+      try { await updateUserProfile(formData); } catch { /* continuar igual */ }
       const matchedUsers = findMatches(formData, mockActiveMatches);
-      setMatches(matchedUsers);
+      saveMatches(matchedUsers);
       onComplete();
     }
   };

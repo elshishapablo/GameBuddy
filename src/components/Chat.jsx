@@ -101,7 +101,7 @@ const Chat = ({ match, onClose }) => {
         initial={{ opacity: 0, x: 300 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 300 }}
-        className="fixed right-0 top-0 h-full w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px] bg-dark-bg z-50 
+        className="fixed right-16 sm:right-20 top-0 h-full w-full sm:w-80 md:w-96 lg:w-[400px] xl:w-[450px] bg-dark-bg z-40 
                    shadow-2xl flex flex-col"
       >
         {/* Header */}
@@ -126,7 +126,7 @@ const Chat = ({ match, onClose }) => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 space-y-3 sm:space-y-4">
+        <div className="scroll-pretty flex-1 min-h-0 p-2 sm:p-3 md:p-4 space-y-3 sm:space-y-4">
           <AnimatePresence>
             {messages.map((message) => (
               <motion.div
