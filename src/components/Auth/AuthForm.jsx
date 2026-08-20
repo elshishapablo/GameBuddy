@@ -4,7 +4,7 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 
 const AuthForm = ({ onSuccess, onBack }) => {
-  const { loginDemo, register } = useUser();
+  const { login, register } = useUser();
   const [tab, setTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,17 +19,16 @@ const AuthForm = ({ onSuccess, onBack }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (tab === 'login') {
-      loginDemo();
-      onSuccess('login', true);
-      return;
-    }
-
     setLoading(true);
+
     try {
-      await register(form.username, form.email, form.password);
-      onSuccess('register', false);
+      if (tab === 'register') {
+        await register(form.username, form.email, form.password);
+        onSuccess('register', false);
+      } else {
+        const result = await login(form.email, form.password);
+        onSuccess('login', result.hasProfile);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -123,7 +122,7 @@ const AuthForm = ({ onSuccess, onBack }) => {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="tu@email.com"
-                required={tab === 'register'}
+                required
                 className="input-field"
               />
             </div>
@@ -137,8 +136,8 @@ const AuthForm = ({ onSuccess, onBack }) => {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  required={tab === 'register'}
-                  minLength={tab === 'register' ? 6 : undefined}
+                  required
+                  minLength={6}
                   className="input-field pr-12"
                 />
                 <button

@@ -45,24 +45,6 @@ export const UserProvider = ({ children }) => {
     return data;
   };
 
-  // Modo prueba: entra sin backend ni formulario
-  const loginDemo = () => {
-    const user = { username: 'Demo', email: 'demo@gamebuddy.test' };
-    const profile = {
-      nickname: 'Demo',
-      platform: 'PC',
-      games: ['Valorant', 'CS2', 'League of Legends'],
-      schedule: 'Noche',
-      hasMicrophone: true,
-      bio: 'Perfil de prueba. El login no usa el backend.',
-    };
-    saveAuth('demo-token', user);
-    localStorage.setItem('gb_profile', JSON.stringify(profile));
-    setUserProfile(profile);
-    recomputeMatches(profile);
-    return { hasProfile: true };
-  };
-
   // login: autentica y luego busca el perfil en la BD
   // devuelve { hasProfile: true/false } para que App.jsx decida si mostrar onboarding
   const login = async (email, password) => {
@@ -179,7 +161,6 @@ export const UserProvider = ({ children }) => {
         isAuthenticated: !!token,
         register,
         login,
-        loginDemo,
         logout,
         userProfile,
         updateUserProfile,
