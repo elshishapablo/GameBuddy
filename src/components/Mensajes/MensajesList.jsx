@@ -15,40 +15,40 @@ const MensajesList = () => {
   );
 
   return (
-    <div className="w-full p-4 sm:p-6">
+    <div className="w-full p-4 sm:p-6 max-w-3xl">
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-light-text mb-2">Mensajes</h1>
-        <p className="text-sm text-medium-text">Tus compañeros disponibles para chatear o jugar</p>
+        <h1 className="font-display text-2xl font-semibold text-light-text tracking-tight">Mensajes</h1>
+        <p className="text-sm text-medium-text mt-1">Compañeros disponibles para chatear o jugar</p>
       </div>
 
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-medium-text" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-medium-text" />
         <input
           type="text"
           placeholder="Buscar por nombre o juego..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-dark-card border border-dark-border text-light-text placeholder-medium-text focus:outline-none focus:ring-2 focus:ring-accent/50"
+          className="input-field pl-10"
         />
       </div>
 
-      <div className="scroll-pretty space-y-3 sm:space-y-4 max-h-[calc(100vh-280px)]">
+      <div className="scroll-pretty space-y-3 max-h-[calc(100vh-280px)] pr-1">
         {filtered.length > 0 ? (
           filtered.map((match, index) => (
             <motion.div
               key={match.id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              transition={{ duration: 0.35, delay: index * 0.04 }}
             >
               <GlassCard match={match} onConnect={() => openChat(match)} />
             </motion.div>
           ))
         ) : (
           <div className="glass-card text-center py-12">
-            <MessageSquare className="w-12 h-12 text-medium-text mx-auto mb-3 opacity-50" />
-            <p className="text-medium-text">No hay conversaciones</p>
-            <p className="text-sm text-medium-text mt-1">
+            <MessageSquare className="w-10 h-10 text-medium-text mx-auto mb-3 opacity-40" />
+            <p className="text-medium-text text-sm">No hay conversaciones</p>
+            <p className="text-xs text-medium-text/70 mt-1">
               {searchTerm ? 'Prueba otro nombre o juego' : 'Tus matches aparecerán aquí'}
             </p>
           </div>

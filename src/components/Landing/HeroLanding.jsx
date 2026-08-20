@@ -1,19 +1,16 @@
 import { motion } from 'framer-motion';
 import { lazy, Suspense, useState, useEffect, useRef } from 'react';
-import { Gamepad2, Users, Clock } from 'lucide-react';
+import { Gamepad2, Users, Clock, ArrowRight } from 'lucide-react';
 import { mockActiveMatches } from '../../utils/mockData';
 
-// Lazy load del planeta 3D que es pesado
 const Planet3D = lazy(() => import('../Planet3D'));
 
 const HeroLanding = ({ onGetStarted }) => {
   const [shouldLoadPlanet, setShouldLoadPlanet] = useState(false);
   const planetContainerRef = useRef(null);
 
-  // Cargar planeta solo cuando esté visible (Intersection Observer)
   useEffect(() => {
     if (!planetContainerRef.current) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -23,105 +20,111 @@ const HeroLanding = ({ onGetStarted }) => {
           }
         });
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0.1, rootMargin: '80px' }
     );
-
     observer.observe(planetContainerRef.current);
-
     return () => observer.disconnect();
   }, []);
 
+  const stats = [
+    { icon: Users, label: '+10K gamers' },
+    { icon: Gamepad2, label: '15+ juegos' },
+    { icon: Clock, label: 'Match en segundos' },
+  ];
+
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-dark-bg">
-      <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-2 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 items-center h-full" style={{ minHeight: '100%' }}>
-          {/* Left: Text Content - Renderizado inmediato sin esperar 3D */}
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[42%] w-[70vw] h-[70vw] max-w-[760px] max-h-[760px] rounded-full bg-[radial-gradient(circle,rgba(168,178,204,0.14)_0%,transparent_68%)]" />
+      </div>
+
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-6 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-2 sm:space-y-3 z-10"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-6 sm:space-y-7 z-10"
           >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-light-text leading-tight">
+            <span className="section-kicker">
+              <span className="w-1.5 h-1.5 rounded-full bg-light-text/80 animate-pulse-soft" />
+              Comunidad global · sin toxicidad
+            </span>
+
+            <h1 className="font-display text-[2.35rem] sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-semibold text-light-text leading-[1.08] tracking-tight">
               Encuentra tu
-              <span className="block text-medium-text">Compañero Perfecto</span>
+              <span className="block text-medium-text font-normal mt-1">compañero perfecto</span>
             </h1>
-            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-medium-text leading-snug">
-              Conecta con gamers según sus habilidades, horarios y compatibilidad.
-              Elimina la toxicidad de los emparejamientos aleatorios.
+
+            <p className="text-sm sm:text-base lg:text-lg text-medium-text leading-relaxed max-w-lg">
+              Conecta con gamers según habilidades, horarios y compatibilidad.
+              Emparejamientos pensados, no aleatorios.
             </p>
 
-            {/* Stats rápidas */}
-            <div className="flex flex-wrap gap-2 py-0.5">
-              <div className="flex items-center gap-1.5">
-                <Users className="w-3 h-3 text-light-text" />
-                <span className="text-xs sm:text-sm text-medium-text">+10K Gamers</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Gamepad2 className="w-3 h-3 text-light-text" />
-                <span className="text-xs sm:text-sm text-medium-text">15+ Juegos</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-3 h-3 text-light-text" />
-                <span className="text-xs sm:text-sm text-medium-text">Match en segundos</span>
-              </div>
+            <div className="flex flex-wrap gap-x-5 gap-y-2.5">
+              {stats.map(({ icon: Icon, label }) => (
+                <div key={label} className="flex items-center gap-2 text-medium-text">
+                  <span className="icon-well w-7 h-7">
+                    <Icon className="w-3.5 h-3.5 text-light-text/80" />
+                  </span>
+                  <span className="text-xs sm:text-sm">{label}</span>
+                </div>
+              ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={onGetStarted}
-                className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+                className="btn-primary text-sm px-6 py-3 inline-flex items-center justify-center gap-2"
               >
-                Comenzar Ahora
+                Comenzar ahora
+                <ArrowRight className="w-4 h-4" />
               </motion.button>
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const element = document.getElementById('como-funciona');
-                  element?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="btn-secondary text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+                whileTap={{ scale: 0.98 }}
+                onClick={() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-secondary text-sm px-6 py-3"
               >
-                Ver Cómo Funciona
+                Ver cómo funciona
               </motion.button>
             </div>
           </motion.div>
 
-          {/* Right: Planet - Espacio reservado para evitar layout shift */}
           <div className="flex flex-col justify-center" ref={planetContainerRef}>
-            {/* Contenedor con altura fija para evitar layout shift */}
-            <div className="relative h-[160px] sm:h-[220px] md:h-[260px] lg:h-[300px] xl:h-[340px] bg-dark-bg min-h-[160px]">
+            <div className="relative h-[280px] sm:h-[360px] md:h-[420px] lg:h-[480px] xl:h-[520px]">
               {shouldLoadPlanet ? (
                 <Suspense
                   fallback={
-                    <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-                      <div className="w-8 h-8 border-4 border-dark-border border-t-accent rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="spinner" />
                     </div>
                   }
                 >
                   <Planet3D
-                    onMatchClick={() => { }}
+                    onMatchClick={() => {}}
                     showMatches={true}
                     filteredMatches={mockActiveMatches}
                   />
                 </Suspense>
               ) : (
-                <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-dark-border border-t-accent rounded-full animate-spin"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="spinner" />
                 </div>
               )}
             </div>
-            <div className="-mt-2 sm:-mt-1 md:mt-15 lg:mt-28 glass-card p-1.5 sm:p-2 lg:p-3">
-              <p className="text-[10px] sm:text-xs md:text-sm text-medium-text text-center">
-                <span className="font-semibold text-light-text">Partidas activas en el mundo</span>
-                <br className="hidden sm:block" />
-                <span className="hidden sm:inline"> </span>
-                <span className="text-[10px] sm:text-xs">Haz clic en los puntos para ver gamers disponibles</span>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="glass rounded-2xl px-4 py-3 -mt-2 sm:mt-0 mx-auto max-w-md"
+            >
+              <p className="text-center text-xs sm:text-sm text-medium-text">
+                <span className="font-medium text-light-text">Partidas activas en el mundo</span>
+                <span className="hidden sm:inline"> · </span>
+                <span className="block sm:inline mt-0.5 sm:mt-0">Gira el planeta y explora cada región</span>
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -130,4 +133,3 @@ const HeroLanding = ({ onGetStarted }) => {
 };
 
 export default HeroLanding;
-

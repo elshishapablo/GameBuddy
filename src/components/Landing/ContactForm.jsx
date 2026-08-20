@@ -6,7 +6,7 @@ import { contactApi } from '../../api/authApi';
 const ContactForm = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+  const [submitStatus, setSubmitStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleChange = (e) =>
@@ -33,22 +33,25 @@ const ContactForm = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="glass-card p-4 sm:p-5 lg:p-6"
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-card p-6 sm:p-8 max-w-2xl mx-auto"
     >
-      <div className="flex items-center gap-2 mb-4 sm:mb-5">
-        <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
-        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-light-text">
-          Contáctanos
-        </h3>
+      <div className="flex items-center gap-3 mb-2">
+        <div className="icon-well w-10 h-10">
+          <Mail className="w-4 h-4 text-light-text" />
+        </div>
+        <div>
+          <h3 className="font-display text-xl sm:text-2xl font-semibold text-light-text">Contáctanos</h3>
+          <p className="text-xs sm:text-sm text-medium-text mt-0.5">Te respondemos con calma, sin spam.</p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-        {/* Nombre */}
+      <form onSubmit={handleSubmit} className="space-y-4 mt-6">
         <div>
-          <label htmlFor="name" className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-light-text">
+          <label htmlFor="name" className="block text-xs font-medium mb-1.5 text-medium-text tracking-wide">
             Nombre
           </label>
           <input
@@ -58,17 +61,12 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             placeholder="Tu nombre"
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border-2 border-dark-border
-                     bg-dark-card/60 backdrop-blur-sm focus:outline-none focus:ring-2
-                     focus:ring-accent/20 focus:border-accent text-sm sm:text-base text-light-text
-                     placeholder:text-medium-text transition-all"
+            className="input-field"
           />
         </div>
-
-        {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-light-text">
-            Correo Electrónico
+          <label htmlFor="email" className="block text-xs font-medium mb-1.5 text-medium-text tracking-wide">
+            Correo electrónico
           </label>
           <input
             type="email"
@@ -77,16 +75,11 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             placeholder="tu@email.com"
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border-2 border-dark-border
-                     bg-dark-card/60 backdrop-blur-sm focus:outline-none focus:ring-2
-                     focus:ring-accent/20 focus:border-accent text-sm sm:text-base text-light-text
-                     placeholder:text-medium-text transition-all"
+            className="input-field"
           />
         </div>
-
-        {/* Mensaje */}
         <div>
-          <label htmlFor="message" className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 text-light-text">
+          <label htmlFor="message" className="block text-xs font-medium mb-1.5 text-medium-text tracking-wide">
             Mensaje
           </label>
           <textarea
@@ -96,55 +89,49 @@ const ContactForm = () => {
             required
             minLength={10}
             rows={4}
-            placeholder="Escribe tu mensaje aquí..."
-            className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border-2 border-dark-border
-                     bg-dark-card/60 backdrop-blur-sm focus:outline-none focus:ring-2
-                     focus:ring-accent/20 focus:border-accent text-sm sm:text-base text-light-text
-                     placeholder:text-medium-text transition-all resize-none"
+            placeholder="Escribe tu mensaje..."
+            className="input-field resize-none"
           />
         </div>
 
-        {/* Feedback */}
         {submitStatus === 'success' && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 p-3 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm"
+            className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm"
           >
             <CheckCircle className="w-4 h-4 shrink-0" />
-            ¡Mensaje enviado! Te responderemos pronto.
+            Mensaje enviado. Te responderemos pronto.
           </motion.div>
         )}
 
         {submitStatus === 'error' && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm"
+            className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm"
           >
             {errorMsg}
           </motion.div>
         )}
 
-        <motion.button
+        <button
           type="submit"
           disabled={isSubmitting}
-          whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-          whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-          className="w-full btn-primary flex items-center justify-center gap-2 py-2.5 sm:py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full btn-primary flex items-center justify-center gap-2 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
-              <Loader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-              <span>Enviando...</span>
+              <Loader className="w-4 h-4 animate-spin" />
+              Enviando...
             </>
           ) : (
             <>
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>Enviar Mensaje</span>
+              <Send className="w-4 h-4" />
+              Enviar mensaje
             </>
           )}
-        </motion.button>
+        </button>
       </form>
     </motion.div>
   );

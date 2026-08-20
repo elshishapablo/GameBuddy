@@ -57,10 +57,10 @@ function AppContent() {
     return (
       <Suspense
         fallback={
-          <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-16 h-16 border-4 border-dark-border border-t-dark-gray rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-medium-text">Cargando...</p>
+          <div className="min-h-screen bg-dark-bg ambient-scene flex items-center justify-center">
+            <div className="text-center relative z-10">
+              <div className="spinner mx-auto mb-4" />
+              <p className="text-sm text-medium-text">Cargando...</p>
             </div>
           </div>
         }
@@ -94,6 +94,7 @@ function AppContent() {
 function App() {
   return (
     <UserProvider>
+      <div className="grain" aria-hidden />
       <AppContent />
     </UserProvider>
   );

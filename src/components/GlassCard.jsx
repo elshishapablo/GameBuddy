@@ -1,88 +1,86 @@
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Gamepad2 } from 'lucide-react';
+import { Mic, MicOff, Heart } from 'lucide-react';
+import { useUser } from '../context/UserContext';
 
 const GlassCard = ({ match, onConnect }) => {
+  const { isFavorite, toggleFavorite } = useUser();
+  const favorite = isFavorite(match.id);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="glass-card hover:shadow-xl transition-all duration-300 p-3 sm:p-4 lg:p-6"
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="glass-card glass-card-hover p-4 sm:p-5"
     >
-      <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
-        {/* Avatar */}
-        <div className="flex-shrink-0">
+      <div className="flex items-start gap-3 sm:gap-4">
+        <div className="relative flex-shrink-0">
           <img
             src={match.avatar}
             alt={match.name}
-            className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full border-2 border-dark-border"
+            className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-white/10 object-cover"
+          />
+          <span
+            className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-dark-card ${
+              match.status === 'online' ? 'bg-emerald-400' : 'bg-zinc-500'
+            }`}
           />
         </div>
 
-        {/* Información */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-1.5 sm:mb-2 gap-2">
-            <div className="min-w-0 flex-1">
-              <h3 className="text-sm sm:text-base md:text-lg font-semibold text-light-text mb-0.5 sm:mb-1 truncate">{match.name}</h3>
-              <p className="text-xs sm:text-sm text-medium-text">{match.platform}</p>
+          <div className="flex items-start justify-between mb-2 gap-2">
+            <div className="min-w-0">
+              <h3 className="font-display text-sm sm:text-base font-semibold text-light-text truncate">{match.name}</h3>
+              <p className="text-xs text-medium-text">{match.platform}</p>
             </div>
-            <div className="flex items-center gap-0.5 sm:gap-1 text-yellow-500 flex-shrink-0">
-              <span className="text-xs sm:text-sm font-medium">{match.rating}</span>
-              <span className="text-[10px] sm:text-xs">⭐</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-xs text-medium-text">★ {match.rating}</span>
+              <button
+                onClick={() => toggleFavorite(match)}
+                title={favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                aria-label={favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                className={`p-1.5 rounded-lg transition-colors ${favorite ? 'text-rose-400' : 'text-medium-text hover:text-rose-400'}`}
+              >
+                <Heart size={15} className={favorite ? 'fill-rose-400' : ''} />
+              </button>
             </div>
           </div>
 
-          {/* Juegos */}
-          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-            {match.games.slice(0, 3).map((game, index) => (
-              <span
-                key={index}
-                className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs bg-dark-card/60 backdrop-blur-sm rounded-md sm:rounded-lg 
-                         border border-dark-border text-light-text"
-              >
-                {game}
-              </span>
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {match.games.slice(0, 3).map((game) => (
+              <span key={game} className="chip">{game}</span>
             ))}
             {match.games.length > 3 && (
-              <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs text-medium-text">
-                +{match.games.length - 3}
+              <span className="text-[10px] text-medium-text self-center">+{match.games.length - 3}</span>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] text-medium-text">{match.schedule}</span>
+            {match.hasMicrophone ? (
+              <span className="flex items-center gap-1 text-emerald-400/90 text-[11px]">
+                <Mic size={12} /> Mic
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-medium-text text-[11px]">
+                <MicOff size={12} /> Sin mic
               </span>
             )}
           </div>
 
-          {/* Horario y Micrófono */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] sm:text-xs text-medium-text">{match.schedule}</span>
-            <div className="flex items-center gap-1 sm:gap-2">
-              {match.hasMicrophone ? (
-                <div className="flex items-center gap-0.5 sm:gap-1 text-green-600">
-                  <Mic size={12} className="sm:w-4 sm:h-4" />
-                  <span className="text-[10px] sm:text-xs">Mic</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-0.5 sm:gap-1 text-medium-text">
-                  <MicOff size={12} className="sm:w-4 sm:h-4" />
-                  <span className="text-[10px] sm:text-xs">Sin mic</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Puntuación de compatibilidad */}
           {match.compatibilityScore && (
-            <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-dark-border">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] sm:text-xs text-medium-text">Compatibilidad</span>
-                <span className="text-xs sm:text-sm font-semibold text-light-text">
-                  {match.compatibilityScore}%
-                </span>
+            <div className="mt-3 pt-3 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[11px] text-medium-text">Compatibilidad</span>
+                <span className="text-xs font-medium text-light-text">{match.compatibilityScore}%</span>
               </div>
-              <div className="mt-1 h-1 sm:h-1.5 bg-dark-border rounded-full overflow-hidden">
+              <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-accent rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${match.compatibilityScore}%` }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 />
               </div>
             </div>
@@ -90,10 +88,9 @@ const GlassCard = ({ match, onConnect }) => {
         </div>
       </div>
 
-      {/* Botón Conectar */}
       <button
         onClick={() => onConnect(match)}
-        className="w-full mt-3 sm:mt-4 btn-primary text-xs sm:text-sm md:text-base px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3"
+        className="w-full mt-4 btn-primary text-sm py-2.5"
       >
         Conectar
       </button>
@@ -102,4 +99,3 @@ const GlassCard = ({ match, onConnect }) => {
 };
 
 export default GlassCard;
-

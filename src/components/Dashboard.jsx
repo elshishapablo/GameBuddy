@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Mic, MicOff, Filter } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import GlassCard from './GlassCard';
-import Planet3D from './Planet3D';
 import Chat from './Chat';
 import Navbar from './Navbar/Navbar';
 import PerfilUsuario from './Perfil/PerfilUsuario';
@@ -12,131 +11,108 @@ import HistorialPartidas from './Historial/HistorialPartidas';
 import FavoritosList from './Favoritos/FavoritosList';
 import { filterByMicrophone } from '../utils/matchAlgorithm';
 
+const Planet3D = lazy(() => import('./Planet3D'));
+
+const AppHeader = ({ children }) => (
+  <header className="sticky top-0 z-20 glass border-b border-white/[0.06] px-4 sm:px-6 py-3">
+    <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div className="flex items-center gap-2.5">
+        <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-9 sm:h-9" />
+        <h1 className="font-display text-lg sm:text-xl font-semibold tracking-tight text-light-text">GameBuddy</h1>
+      </div>
+      {children}
+    </div>
+  </header>
+);
+
 const Dashboard = ({ onBack }) => {
   const { matches, openChat, currentChat, closeChat, logout } = useUser();
   const [activeView, setActiveView] = useState('inicio');
-  const [microphoneFilter, setMicrophoneFilter] = useState(null); // null = todos, true = con mic, false = sin mic
+  const [microphoneFilter, setMicrophoneFilter] = useState(null);
   const [filteredMatches, setFilteredMatches] = useState(matches);
-  const [selectedRegion, setSelectedRegion] = useState(null);
 
-  // Scroll al top cuando se monta el componente
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    let filtered = matches;
-
-    // Aplicar filtro de micrófono
-    if (microphoneFilter !== null) {
-      filtered = filterByMicrophone(filtered, microphoneFilter);
-    }
-
-    // Aplicar filtro de región (si se selecciona una región en el planeta)
-    if (selectedRegion) {
-      // Filtrar por región aproximada (podrías mejorar esto con coordenadas más precisas)
-      filtered = filtered.filter((match) => {
-        // Lógica simple de región basada en lat/lng
-        // Esto es un ejemplo básico, puedes mejorarlo
-        return true; // Por ahora mostrar todos
-      });
-    }
-
-    setFilteredMatches(filtered);
-  }, [matches, microphoneFilter, selectedRegion]);
-
-  const handleMatchClick = (match) => {
-    openChat(match);
-  };
-
-  const handlePlanetClick = (match) => {
-    setSelectedRegion(match);
-  };
+    setFilteredMatches(filterByMicrophone(matches, microphoneFilter));
+  }, [matches, microphoneFilter]);
 
   const handleLogout = () => {
     logout();
     onBack?.();
   };
 
+  const filterBtn = (active) =>
+    `px-3 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
+      active ? 'bg-accent text-dark-bg' : 'text-medium-text hover:text-light-text hover:bg-white/[0.04]'
+    }`;
+
   const renderContent = () => {
     switch (activeView) {
       case 'inicio':
         return (
           <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <img src="/icon.png" alt="GameBuddy Logo" className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14" />
-                  <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-light-text">GameBuddy</h1>
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <Filter size={16} className="sm:w-[18px] sm:h-[18px] text-medium-text" />
-                  <div className="flex items-center gap-1 glass rounded-lg sm:rounded-xl p-0.5 sm:p-1 flex-1 sm:flex-initial">
-                    <button
-                      onClick={() => setMicrophoneFilter(null)}
-                      className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                        microphoneFilter === null ? 'bg-accent text-dark-bg' : 'text-medium-text hover:bg-dark-card/60'
-                      }`}
-                    >
-                      Todos
-                    </button>
-                    <button
-                      onClick={() => setMicrophoneFilter(true)}
-                      className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1 sm:gap-2 ${
-                        microphoneFilter === true ? 'bg-accent text-dark-bg' : 'text-medium-text hover:bg-dark-card/60'
-                      }`}
-                    >
-                      <Mic size={14} className="sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">Con Mic</span>
-                    </button>
-                    <button
-                      onClick={() => setMicrophoneFilter(false)}
-                      className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1 sm:gap-2 ${
-                        microphoneFilter === false ? 'bg-accent text-dark-bg' : 'text-medium-text hover:bg-dark-card/60'
-                      }`}
-                    >
-                      <MicOff size={14} className="sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">Sin Mic</span>
-                    </button>
-                  </div>
+            <AppHeader>
+              <div className="flex items-center gap-2">
+                <Filter size={14} className="text-medium-text hidden sm:block" />
+                <div className="flex items-center gap-0.5 glass rounded-xl p-1">
+                  <button onClick={() => setMicrophoneFilter(null)} className={filterBtn(microphoneFilter === null)}>
+                    Todos
+                  </button>
+                  <button onClick={() => setMicrophoneFilter(true)} className={`${filterBtn(microphoneFilter === true)} flex items-center gap-1.5`}>
+                    <Mic size={13} />
+                    <span className="hidden sm:inline">Con mic</span>
+                  </button>
+                  <button onClick={() => setMicrophoneFilter(false)} className={`${filterBtn(microphoneFilter === false)} flex items-center gap-1.5`}>
+                    <MicOff size={13} />
+                    <span className="hidden sm:inline">Sin mic</span>
+                  </button>
                 </div>
               </div>
-            </header>
-            <div className="max-w-7xl mx-auto p-2 sm:p-3 md:p-4 lg:p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-                <div className="lg:col-span-1 space-y-3 sm:space-y-4">
-                  <div className="glass-card p-3 sm:p-4 lg:p-6">
-                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 lg:mb-4 text-light-text">
-                      Compañeros Disponibles
-                    </h2>
-                    <p className="text-xs sm:text-sm md:text-base text-medium-text mb-2 sm:mb-3 lg:mb-4">
+            </AppHeader>
+            <div className="max-w-7xl mx-auto p-4 sm:p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+                <div className="lg:col-span-1 space-y-4">
+                  <div className="glass-card p-4 sm:p-5">
+                    <h2 className="font-display text-lg sm:text-xl font-semibold text-light-text">Compañeros</h2>
+                    <p className="text-xs sm:text-sm text-medium-text mt-1">
                       {filteredMatches.length} {filteredMatches.length === 1 ? 'match encontrado' : 'matches encontrados'}
                     </p>
                   </div>
-                  <div className="scroll-pretty space-y-3 sm:space-y-4 max-h-[calc(100vh-200px)] sm:max-h-[calc(100vh-250px)] lg:max-h-[calc(100vh-300px)]">
+                  <div className="scroll-pretty space-y-3 max-h-[calc(100vh-260px)] pr-1">
                     {filteredMatches.length > 0 ? (
                       filteredMatches.map((match) => (
-                        <GlassCard key={match.id} match={match} onConnect={handleMatchClick} />
+                        <GlassCard key={match.id} match={match} onConnect={openChat} />
                       ))
                     ) : (
-                      <div className="glass-card text-center py-8">
-                        <p className="text-medium-text">No se encontraron matches</p>
-                        <p className="text-sm text-medium-text mt-2">Intenta ajustar los filtros</p>
+                      <div className="glass-card text-center py-10">
+                        <p className="text-medium-text text-sm">No se encontraron matches</p>
+                        <p className="text-xs text-medium-text/70 mt-1">Prueba a ajustar los filtros</p>
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="lg:col-span-2">
-                  <div className="glass-card h-full min-h-[300px] sm:min-h-[400px] md:min-h-[500px] lg:min-h-[600px] xl:min-h-[700px] p-3 sm:p-4 lg:p-6">
-                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4 text-light-text">
-                      Partidas Activas en el Mundo
-                    </h2>
-                    <div className="h-[250px] sm:h-[350px] md:h-[450px] lg:h-[500px] xl:h-[600px] rounded-lg sm:rounded-xl overflow-hidden">
-                      <Planet3D onMatchClick={handlePlanetClick} showMatches={true} filteredMatches={filteredMatches} />
+                  <div className="glass-card h-full min-h-[420px] p-4 sm:p-5">
+                    <div className="flex items-end justify-between mb-3">
+                      <div>
+                        <h2 className="font-display text-lg sm:text-xl font-semibold text-light-text">Partidas en el mundo</h2>
+                        <p className="text-xs text-medium-text mt-1">Gira el planeta y pulsa un punto para conectar</p>
+                      </div>
                     </div>
-                    <p className="text-xs sm:text-sm md:text-base text-medium-text mt-3 sm:mt-4 text-center">
-                      Haz clic en los puntos del planeta para ver partidas activas por región
-                    </p>
+                    <div className="h-[280px] sm:h-[400px] lg:h-[520px] rounded-2xl overflow-hidden relative">
+                      <Suspense
+                        fallback={
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="spinner" />
+                          </div>
+                        }
+                      >
+                        <Planet3D onMatchClick={openChat} showMatches={true} filteredMatches={filteredMatches} />
+                      </Suspense>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -144,103 +120,37 @@ const Dashboard = ({ onBack }) => {
           </>
         );
       case 'mensajes':
-        return (
-          <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-                <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-10 sm:h-10" />
-                <h1 className="text-lg sm:text-xl font-bold text-light-text">GameBuddy</h1>
-              </div>
-            </header>
-            <MensajesList />
-          </>
-        );
+        return <><AppHeader /><MensajesList /></>;
       case 'historial':
-        return (
-          <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-                <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-10 sm:h-10" />
-                <h1 className="text-lg sm:text-xl font-bold text-light-text">GameBuddy</h1>
-              </div>
-            </header>
-            <HistorialPartidas />
-          </>
-        );
+        return <><AppHeader /><HistorialPartidas /></>;
       case 'favoritos':
-        return (
-          <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-                <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-10 sm:h-10" />
-                <h1 className="text-lg sm:text-xl font-bold text-light-text">GameBuddy</h1>
-              </div>
-            </header>
-            <FavoritosList />
-          </>
-        );
+        return <><AppHeader /><FavoritosList /></>;
       case 'perfil':
-        return (
-          <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-                <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-10 sm:h-10" />
-                <h1 className="text-lg sm:text-xl font-bold text-light-text">GameBuddy</h1>
-              </div>
-            </header>
-            <PerfilUsuario />
-          </>
-        );
+        return <><AppHeader /><PerfilUsuario /></>;
       case 'settings':
-        return (
-          <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-                <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-10 sm:h-10" />
-                <h1 className="text-lg sm:text-xl font-bold text-light-text">GameBuddy</h1>
-              </div>
-            </header>
-            <Configuracion />
-          </>
-        );
+        return <><AppHeader /><Configuracion /></>;
       default:
         return (
           <>
-            <header className="glass border-b border-dark-border p-2 sm:p-3 lg:p-4">
-              <div className="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-                <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-10 sm:h-10" />
-                <h1 className="text-lg sm:text-xl font-bold text-light-text">GameBuddy</h1>
-              </div>
-            </header>
-            <div className="max-w-7xl mx-auto p-4 text-center text-medium-text">Selecciona una opción del menú.</div>
+            <AppHeader />
+            <div className="max-w-7xl mx-auto p-6 text-center text-medium-text text-sm">Selecciona una opción del menú.</div>
           </>
         );
     }
   };
 
   return (
-    <div className="min-h-screen bg-dark-bg">
-      <div className="flex flex-col min-w-0 pr-16 sm:pr-20">
+    <div className="min-h-screen bg-dark-bg ambient-scene">
+      <div className="flex flex-col min-w-0 pr-16 sm:pr-[4.5rem] relative z-10">
         {renderContent()}
-
-      {/* Chat Overlay */}
-      {currentChat && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" onClick={closeChat} />
-      )}
-      {currentChat && (
-        <Chat match={currentChat} onClose={closeChat} />
-      )}
+        {currentChat && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-[6px] z-40" onClick={closeChat} />
+        )}
+        {currentChat && <Chat match={currentChat} onClose={closeChat} />}
       </div>
-
-      {/* Barra lateral derecha (estilo Microconsultas) */}
-      <Navbar
-        activeView={activeView}
-        onViewChange={setActiveView}
-        onLogout={handleLogout}
-      />
+      <Navbar activeView={activeView} onViewChange={setActiveView} onLogout={handleLogout} />
     </div>
   );
 };
 
 export default Dashboard;
-

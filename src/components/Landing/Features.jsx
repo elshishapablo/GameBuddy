@@ -14,93 +14,52 @@ import {
 
 const Features = () => {
   const features = [
-    {
-      icon: Mic,
-      title: 'Filtro de Micrófono',
-      description: 'Encuentra compañeros con o sin micrófono. Filtro principal para una mejor experiencia.',
-    },
-    {
-      icon: Search,
-      title: 'Búsqueda Inteligente',
-      description: 'Algoritmo avanzado que encuentra matches perfectos basado en juegos, horarios y plataformas.',
-    },
-    {
-      icon: MessageSquare,
-      title: 'Chat Premium',
-      description: 'Interfaz de mensajería minimalista y elegante para coordinar partidas.',
-    },
-    {
-      icon: Star,
-      title: 'Sistema de Ratings',
-      description: 'Califica a tus compañeros y ayuda a construir una comunidad positiva.',
-    },
-    {
-      icon: Filter,
-      title: 'Filtros Avanzados',
-      description: 'Filtra por plataforma, juegos, horario y más para encontrar exactamente lo que buscas.',
-    },
-    {
-      icon: Globe,
-      title: 'Planeta Interactivo',
-      description: 'Visualiza partidas activas en el mundo en tiempo real. Haz clic para explorar.',
-    },
-    {
-      icon: Zap,
-      title: 'Match Rápido',
-      description: 'Conecta con compañeros en segundos. Sin esperas, sin complicaciones.',
-    },
-    {
-      icon: Shield,
-      title: 'Seguro y Confiable',
-      description: 'Perfiles verificados y sistema de reportes para mantener la comunidad segura.',
-    },
-    {
-      icon: Clock,
-      title: 'Disponibilidad 24/7',
-      description: 'Gamers activos en todo el mundo. Siempre hay alguien disponible para jugar.',
-    },
-    {
-      icon: Users,
-      title: 'Comunidad Activa',
-      description: 'Únete a miles de gamers que buscan compañeros de juego serios y amigables.',
-    },
+    { icon: Mic, title: 'Filtro de micrófono', description: 'Compañeros con o sin mic. El filtro que más cambia la partida.' },
+    { icon: Search, title: 'Búsqueda inteligente', description: 'Matches por juegos, horarios y plataforma, no por azar.' },
+    { icon: MessageSquare, title: 'Chat limpio', description: 'Mensajería minimalista para coordinar sin ruido visual.' },
+    { icon: Star, title: 'Ratings', description: 'Califica compañeros y construye una comunidad más sana.' },
+    { icon: Filter, title: 'Filtros precisos', description: 'Plataforma, títulos, horario y más, exactamente lo que buscas.' },
+    { icon: Globe, title: 'Planeta interactivo', description: 'Partidas activas en el mundo. Gira, apunta y explora.' },
+    { icon: Zap, title: 'Match rápido', description: 'Conecta en segundos. Sin colas, sin fricción.' },
+    { icon: Shield, title: 'Seguro', description: 'Perfiles y reportes para mantener el espacio en calma.' },
+    { icon: Clock, title: 'Siempre activo', description: 'Gamers en todo el mundo. Siempre hay alguien listo.' },
+    { icon: Users, title: 'Comunidad', description: 'Miles de jugadores buscando partidas serias y amables.' },
   ];
 
   return (
-    <section id="caracteristicas" className="py-10 sm:py-12 md:py-16 lg:py-20 xl:py-24 bg-dark-bg">
-      <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+    <section id="caracteristicas" className="relative py-16 sm:py-20 lg:py-28">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8 sm:mb-12 lg:mb-16"
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-light-text mb-3 sm:mb-4">Características Premium</h2>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-medium-text max-w-3xl mx-auto">
-            Todo lo que necesitas para encontrar compañeros de juego perfectos y disfrutar 
-            de una experiencia gaming sin toxicidad
+          <p className="section-kicker mb-4">Herramientas</p>
+          <h2 className="section-title text-3xl sm:text-4xl lg:text-5xl mb-4">Características</h2>
+          <p className="text-sm sm:text-base lg:text-lg text-medium-text max-w-2xl mx-auto leading-relaxed">
+            Todo lo necesario para encontrar compañeros y jugar sin toxicidad.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="glass-card hover:shadow-xl transition-all p-3 sm:p-4 lg:p-6"
+                transition={{ duration: 0.5, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                className="glass-card glass-card-hover p-5"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full 
-                              bg-dark-surface/60 backdrop-blur-sm border border-dark-border mb-3 sm:mb-4">
-                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-light-text" />
+                <div className="icon-well w-10 h-10 mb-4">
+                  <Icon className="w-[18px] h-[18px] text-light-text" />
                 </div>
-                <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-light-text mb-2">{feature.title}</h3>
-                <p className="text-xs sm:text-sm md:text-base text-medium-text">{feature.description}</p>
+                <h3 className="font-display text-base font-semibold text-light-text mb-1.5">{feature.title}</h3>
+                <p className="text-xs sm:text-sm text-medium-text leading-relaxed">{feature.description}</p>
               </motion.div>
             );
           })}
@@ -111,4 +70,3 @@ const Features = () => {
 };
 
 export default Features;
-

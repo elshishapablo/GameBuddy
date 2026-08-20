@@ -20,6 +20,10 @@ export const UserProvider = ({ children }) => {
     const saved = localStorage.getItem('gb_matches');
     return saved ? JSON.parse(saved) : [];
   });
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('gb_favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const saveAuth = (tkn, user) => {
     localStorage.setItem('gb_token', tkn);
@@ -39,6 +43,24 @@ export const UserProvider = ({ children }) => {
     const data = await authApi.register(username, email, password);
     saveAuth(data.token, { username: data.username, email: data.email });
     return data;
+  };
+
+  // Modo prueba: entra sin backend ni formulario
+  const loginDemo = () => {
+    const user = { username: 'Demo', email: 'demo@gamebuddy.test' };
+    const profile = {
+      nickname: 'Demo',
+      platform: 'PC',
+      games: ['Valorant', 'CS2', 'League of Legends'],
+      schedule: 'Noche',
+      hasMicrophone: true,
+      bio: 'Perfil de prueba. El login no usa el backend.',
+    };
+    saveAuth('demo-token', user);
+    localStorage.setItem('gb_profile', JSON.stringify(profile));
+    setUserProfile(profile);
+    recomputeMatches(profile);
+    return { hasProfile: true };
   };
 
   // login: autentica y luego busca el perfil en la BD
@@ -89,10 +111,19 @@ export const UserProvider = ({ children }) => {
     // si el backend no está disponible. Sí borramos el cache global y matches.
     localStorage.removeItem('gb_profile');
     localStorage.removeItem('gb_matches');
+    localStorage.removeItem('gb_favorites');
     setToken(null);
     setAuthUser(null);
     setUserProfile(null);
     setMatches([]);
+    setFavorites([]);
+  };
+
+  // Recalcula y persiste los matches a partir de un perfil dado
+  const recomputeMatches = (profile) => {
+    const matchedUsers = findMatches(profile, mockActiveMatches);
+    localStorage.setItem('gb_matches', JSON.stringify(matchedUsers));
+    setMatches(matchedUsers);
   };
 
   // Guarda el perfil en la BD y en localStorage
@@ -100,20 +131,20 @@ export const UserProvider = ({ children }) => {
     // Siempre cachear localmente para no bloquear el flujo si el backend falla.
     // Si el backend responde, cacheamos la versión "oficial"; si no, guardamos el perfil local.
     const tkn = localStorage.getItem('gb_token');
+    const email = authUser?.email || JSON.parse(localStorage.getItem('gb_user') || 'null')?.email;
+    const profileKey = getProfileCacheKey(email);
     try {
       const saved = await profileApi.save(tkn, profile);
       localStorage.setItem('gb_profile', JSON.stringify(saved));
-      const email = authUser?.email || JSON.parse(localStorage.getItem('gb_user') || 'null')?.email;
-      const profileKey = getProfileCacheKey(email);
       if (profileKey) localStorage.setItem(profileKey, JSON.stringify(saved));
       setUserProfile(saved);
+      recomputeMatches(saved);
       return saved;
     } catch {
       localStorage.setItem('gb_profile', JSON.stringify(profile));
-      const email = authUser?.email || JSON.parse(localStorage.getItem('gb_user') || 'null')?.email;
-      const profileKey = getProfileCacheKey(email);
       if (profileKey) localStorage.setItem(profileKey, JSON.stringify(profile));
       setUserProfile(profile);
+      recomputeMatches(profile);
       return profile;
     }
   };
@@ -121,6 +152,20 @@ export const UserProvider = ({ children }) => {
   const saveMatches = (newMatches) => {
     localStorage.setItem('gb_matches', JSON.stringify(newMatches));
     setMatches(newMatches);
+  };
+
+  const saveFavorites = (next) => {
+    localStorage.setItem('gb_favorites', JSON.stringify(next));
+    setFavorites(next);
+  };
+
+  const isFavorite = (id) => favorites.some((f) => f.id === id);
+
+  const toggleFavorite = (match) => {
+    const next = isFavorite(match.id)
+      ? favorites.filter((f) => f.id !== match.id)
+      : [...favorites, match];
+    saveFavorites(next);
   };
 
   const openChat = (match) => setCurrentChat(match);
@@ -134,6 +179,7 @@ export const UserProvider = ({ children }) => {
         isAuthenticated: !!token,
         register,
         login,
+        loginDemo,
         logout,
         userProfile,
         updateUserProfile,
@@ -143,6 +189,9 @@ export const UserProvider = ({ children }) => {
         matches,
         setMatches,
         saveMatches,
+        favorites,
+        isFavorite,
+        toggleFavorite,
       }}
     >
       {children}

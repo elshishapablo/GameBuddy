@@ -1,18 +1,15 @@
 import { motion } from 'framer-motion';
 import { Heart, MessageSquare } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
-import GlassCard from '../GlassCard';
 
 const FavoritosList = () => {
-  const { matches, openChat } = useUser();
-  // Por ahora mostramos los mismos matches como "favoritos"; luego se puede filtrar por favoritos reales
-  const favoritos = matches;
+  const { favorites: favoritos, openChat, toggleFavorite } = useUser();
 
   return (
     <div className="w-full p-4 sm:p-6 space-y-4">
-      <div className="mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-light-text mb-2">Favoritos</h2>
-        <p className="text-sm text-medium-text">Compañeros que has guardado para jugar</p>
+      <div className="mb-2">
+        <h2 className="font-display text-2xl font-semibold text-light-text tracking-tight">Favoritos</h2>
+        <p className="text-sm text-medium-text mt-1">Compañeros que has guardado</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -20,58 +17,47 @@ const FavoritosList = () => {
           favoritos.map((match, index) => (
             <motion.div
               key={match.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="glass-card p-4 sm:p-6 rounded-xl flex flex-col"
+              transition={{ duration: 0.35, delay: index * 0.05 }}
+              className="glass-card glass-card-hover p-5 flex flex-col"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={match.avatar}
-                    alt={match.name}
-                    className="w-12 h-12 rounded-full border-2 border-dark-border"
-                  />
+                  <img src={match.avatar} alt={match.name} className="w-11 h-11 rounded-full border border-white/10 object-cover" />
                   <div>
-                    <h3 className="font-semibold text-light-text">{match.name}</h3>
+                    <h3 className="font-display font-semibold text-light-text text-sm">{match.name}</h3>
                     <p className="text-xs text-medium-text">{match.platform}</p>
                   </div>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="text-red-500 p-1"
+                <button
+                  onClick={() => toggleFavorite(match)}
+                  className="text-rose-400 p-1"
                   title="Quitar de favoritos"
+                  aria-label="Quitar de favoritos"
                 >
-                  <Heart className="w-5 h-5 fill-red-500" />
-                </motion.button>
+                  <Heart className="w-4 h-4 fill-rose-400" />
+                </button>
               </div>
               <div className="flex flex-wrap gap-1.5 mb-4">
-                {match.games?.slice(0, 3).map((game, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 text-xs bg-dark-surface rounded-lg border border-dark-border text-light-text"
-                  >
-                    {game}
-                  </span>
+                {match.games?.slice(0, 3).map((game) => (
+                  <span key={game} className="chip">{game}</span>
                 ))}
               </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 onClick={() => openChat(match)}
-                className="w-full py-2 rounded-xl bg-accent text-dark-bg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                className="mt-auto w-full btn-primary py-2 text-sm flex items-center justify-center gap-2"
               >
                 <MessageSquare className="w-4 h-4" />
                 Conectar
-              </motion.button>
+              </button>
             </motion.div>
           ))
         ) : (
           <div className="col-span-full glass-card text-center py-12">
-            <Heart className="w-12 h-12 text-medium-text mx-auto mb-3 opacity-50" />
-            <p className="text-medium-text">Aún no tienes favoritos</p>
-            <p className="text-sm text-medium-text mt-1">Marca compañeros como favoritos desde Inicio o Mensajes</p>
+            <Heart className="w-10 h-10 text-medium-text mx-auto mb-3 opacity-40" />
+            <p className="text-medium-text text-sm">Aún no tienes favoritos</p>
+            <p className="text-xs text-medium-text/70 mt-1">Márcalos desde Inicio o Mensajes</p>
           </div>
         )}
       </div>

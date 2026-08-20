@@ -14,94 +14,66 @@ const Navbar = ({ activeView, onViewChange, onLogout }) => {
     { id: 'settings', icon: Settings, label: 'Configuración' },
   ];
 
-  const handleLogout = () => {
-    onLogout?.();
-  };
-
   const initial = authUser?.username?.charAt(0)?.toUpperCase() || 'U';
 
   return (
-    <motion.div
-      initial={{ x: 100, opacity: 0 }}
+    <motion.aside
+      initial={{ x: 24, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="fixed top-0 right-0 h-full w-16 sm:w-20 z-50 bg-dark-card/95 backdrop-blur-sm flex flex-col items-center py-5 overflow-visible shadow-[ -4px_0_24px_0_rgba(0,0,0,0.4)]"
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 right-0 h-full w-16 sm:w-[4.5rem] z-50 glass border-l border-white/[0.06] flex flex-col items-center py-5"
     >
-      {/* Logo arriba */}
       <div className="mb-6 shrink-0">
-        <img
-          src="/icon.png"
-          alt="GameBuddy"
-          className="w-9 h-9 sm:w-10 sm:h-10"
-        />
+        <img src="/icon.png" alt="GameBuddy" className="w-8 h-8 sm:w-9 sm:h-9" />
       </div>
 
-      {/* Items del menú: sin flex-1 para evitar hueco vertical */}
-      <div className="flex flex-col gap-2 w-full px-2 shrink-0">
+      <div className="flex flex-col gap-1.5 w-full px-2 shrink-0">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
           return (
-            <motion.button
+            <button
               key={item.id}
               onClick={() => onViewChange?.(item.id)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`w-full p-2.5 rounded-xl transition-all relative group ${
-                isActive
-                  ? 'bg-white/10 shadow-md'
-                  : 'hover:bg-dark-surface/60'
+              className={`relative w-full p-2.5 rounded-xl transition-all duration-300 group ${
+                isActive ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'
               }`}
               title={item.label}
             >
               {isActive && (
-                <span
-                  className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-8 bg-accent rounded-r-full"
-                  aria-hidden
-                />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-accent rounded-r-full" />
               )}
               <Icon
-                className={`w-5 h-5 transition-colors mx-auto ${
-                  isActive
-                    ? 'text-light-text'
-                    : 'text-medium-text group-hover:text-light-text'
+                className={`w-[18px] h-[18px] mx-auto transition-colors duration-300 ${
+                  isActive ? 'text-light-text' : 'text-medium-text group-hover:text-light-text'
                 }`}
               />
-            </motion.button>
+            </button>
           );
         })}
       </div>
 
-      {/* Espaciador para empujar el bloque de abajo al final */}
-      <div className="flex-1 min-h-4" aria-hidden />
+      <div className="flex-1" aria-hidden />
 
-      {/* Abajo: notificaciones, avatar, cerrar sesión */}
-      <div className="flex flex-col gap-3 w-full px-2 shrink-0">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="relative p-2.5 rounded-xl hover:bg-dark-surface/60 transition-colors group"
-          title="Notificaciones"
-        >
-          <Bell className="w-5 h-5 text-medium-text group-hover:text-light-text transition-colors mx-auto" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
-        </motion.button>
+      <div className="flex flex-col items-center gap-3 w-full px-2 shrink-0">
+        <button className="relative p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group" title="Notificaciones">
+          <Bell className="w-[18px] h-[18px] text-medium-text group-hover:text-light-text transition-colors" />
+          <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-rose-400 rounded-full shadow-[0_0_8px_rgba(251,113,133,0.7)]" />
+        </button>
 
-        <div className="w-10 h-10 rounded-full bg-dark-surface border border-dark-border flex items-center justify-center mx-auto text-light-text text-sm font-semibold shrink-0">
+        <div className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center text-light-text text-xs font-semibold">
           {initial}
         </div>
 
-        <motion.button
-          onClick={handleLogout}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="p-2.5 rounded-xl hover:bg-red-500/20 transition-colors group border-t border-dark-border/50 mt-2 pt-4"
+        <button
+          onClick={() => onLogout?.()}
+          className="p-2.5 rounded-xl hover:bg-rose-500/10 transition-colors group"
           title="Cerrar sesión"
         >
-          <LogOut className="w-5 h-5 text-medium-text group-hover:text-red-400 transition-colors mx-auto" />
-        </motion.button>
+          <LogOut className="w-[18px] h-[18px] text-medium-text group-hover:text-rose-400 transition-colors" />
+        </button>
       </div>
-    </motion.div>
+    </motion.aside>
   );
 };
 
